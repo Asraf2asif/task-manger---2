@@ -35,10 +35,10 @@ Open a terminal and navigate to the backend folder:
 ```bash
 cd backend
 go mod download
-go run cmd/server/main.go
+go run .
 ```
 
-The server starts on port 8080. You should see "Server starting on port 8080" in your terminal.
+The server starts on port 8080 with 72 demo tasks loaded. You should see "Server starting on port 8080" and "Loaded 72 demo tasks from JSON" in your terminal.
 
 ### Running the Frontend
 
