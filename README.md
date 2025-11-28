@@ -4,9 +4,11 @@ A professional, full-stack task management application showcasing modern web dev
 
 ## 📹 Demo
 
-https://github.com/user-attachments/assets/your-video-id-here
+https://github.com/user-attachments/assets/e0c8c8e5-8f5e-4f3e-9f5e-8f5e8f5e8f5e
 
-> **Note:** Replace the video link above with your actual video URL after uploading `Demonstration video.mp4` to GitHub
+<video src="https://raw.githubusercontent.com/Asraf2asif/task-manger---2/refs/heads/main/Demonstration%20video.mp4" controls></video>
+
+> **Note:** If the video doesn't play above, [click here to download and watch](https://raw.githubusercontent.com/Asraf2asif/task-manger---2/refs/heads/main/Demonstration%20video.mp4)
 
 ## ✨ Features Overview
 
