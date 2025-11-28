@@ -7,16 +7,21 @@ A clean task management application built with Go and React. Nothing fancy, just
 **Backend (Go):**
 
 - REST API with proper error handling
-- In-memory storage (no database needed for this demo)
+- SQLite database for persistent storage (pure Go, no CGO required)
+- 72 demo tasks seeded on first run
 - Clean separation of concerns across multiple files
 - CORS enabled for local development
 
-**Frontend (React + Material-UI):**
+**Frontend (React + Shadcn/UI):**
 
-- Modern, responsive interface
-- Task creation, editing, and deletion
-- Tasks organized by status (To Do, In Progress, Done)
-- Priority levels with color coding
+- Modern, responsive interface with Tailwind CSS
+- Task creation, editing, and deletion with confirmation dialogs
+- Tabs for To Do, In Progress, and Done tasks
+- Independent sorting per tab (Priority/Date/Name)
+- Pagination (10 tasks per page)
+- Real-time search functionality
+- Smooth animations with Framer Motion
+- Toast notifications for all actions
 
 ## Getting Started
 
@@ -34,11 +39,10 @@ Open a terminal and navigate to the backend folder:
 
 ```bash
 cd backend
-go mod download
 go run .
 ```
 
-The server starts on port 8080 with SQLite database. On first run, it will create `tasks.db` and seed it with 72 demo tasks. You should see "Server starting on port 8080" and "Successfully seeded 72 demo tasks" in your terminal.
+The server starts on port 8080 with SQLite database (pure Go, no CGO required). On first run, it will automatically download dependencies, create `tasks.db`, and seed it with 72 demo tasks. You should see "Server starting on port 8080" and "Successfully seeded 72 demo tasks" in your terminal.
 
 ### Running the Frontend
 
