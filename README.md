@@ -4,7 +4,7 @@ A professional, full-stack task management application showcasing modern web dev
 
 ## 📹 Demo
 
-[![Watch Demo Video](https://img.shields.io/badge/▶️_Watch_Demo-Google_Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/file/d/1YfPfDQUVGwjPNBLabGsrwOxcsfa0AavE/view?usp=sharing)
+# [![Watch Demo Video](https://img.shields.io/badge/▶️_Watch_Demo-Google_Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/file/d/1YfPfDQUVGwjPNBLabGsrwOxcsfa0AavE/view?usp=sharing)
 
 > Click the button above to watch the full demonstration video on Google Drive
 
