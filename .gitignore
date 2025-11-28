@@ -1,6 +1,7 @@
 # Backend
 backend/taskapp
 backend/*.exe
+backend/tasks.db
 
 # Frontend
 frontend-vite/node_modules/

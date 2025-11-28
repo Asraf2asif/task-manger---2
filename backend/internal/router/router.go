@@ -9,7 +9,7 @@ import (
 )
 
 // Setup configures all routes and returns the router
-func Setup(store *storage.MemoryStore) http.Handler {
+func Setup(store storage.Store) http.Handler {
 	router := mux.NewRouter()
 	taskHandler := handlers.NewTaskHandler(store)
 

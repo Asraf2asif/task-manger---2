@@ -38,7 +38,7 @@ go mod download
 go run .
 ```
 
-The server starts on port 8080 with 72 demo tasks loaded. You should see "Server starting on port 8080" and "Loaded 72 demo tasks from JSON" in your terminal.
+The server starts on port 8080 with SQLite database. On first run, it will create `tasks.db` and seed it with 72 demo tasks. You should see "Server starting on port 8080" and "Successfully seeded 72 demo tasks" in your terminal.
 
 ### Running the Frontend
 
@@ -102,7 +102,7 @@ frontend-vite/
 
 ## Notes
 
-The backend uses demo data that's hardcoded in storage.go. When you restart the server, any changes you made will be lost. That's intentional - this is a demo, not a production app. In a real application, you'd connect to a database like PostgreSQL or MongoDB.
+The backend uses SQLite for persistent storage. Your changes are saved to `tasks.db` and will persist across server restarts. The database is seeded with 72 demo tasks on first run only.
 
 The frontend assumes the backend runs on localhost:8080. If you change the port, update the API_BASE constant in frontend/src/services/api.js.
 

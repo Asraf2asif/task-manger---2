@@ -13,11 +13,11 @@ import (
 
 // TaskHandler handles task-related HTTP requests
 type TaskHandler struct {
-	store *storage.MemoryStore
+	store storage.Store
 }
 
 // NewTaskHandler creates a new task handler
-func NewTaskHandler(store *storage.MemoryStore) *TaskHandler {
+func NewTaskHandler(store storage.Store) *TaskHandler {
 	return &TaskHandler{store: store}
 }
 
