@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Edit2, Trash2, AlertCircle, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import DeleteDialog from "./DeleteDialog.jsx";
 
 function TaskCard({ task, onEdit, onDelete }) {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   // Priority configuration
   const priorityConfig = {
     low: { variant: "secondary", icon: Clock },
@@ -16,10 +19,9 @@ function TaskCard({ task, onEdit, onDelete }) {
   const config = priorityConfig[task.priority];
   const PriorityIcon = config.icon;
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this task?")) {
-      onDelete(task.id);
-    }
+  const handleDeleteConfirm = () => {
+    onDelete(task.id);
+    setDeleteDialogOpen(false);
   };
 
   return (
@@ -61,7 +63,7 @@ function TaskCard({ task, onEdit, onDelete }) {
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleDelete}
+              onClick={() => setDeleteDialogOpen(true)}
               aria-label="delete task"
               className="text-destructive hover:text-destructive"
             >
@@ -70,6 +72,12 @@ function TaskCard({ task, onEdit, onDelete }) {
           </motion.div>
         </CardFooter>
       </Card>
+      <DeleteDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleDeleteConfirm}
+        taskTitle={task.title}
+      />
     </motion.div>
   );
 }
