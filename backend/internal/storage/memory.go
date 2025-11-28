@@ -1,10 +1,16 @@
 package storage
 
 import (
+	_ "embed"
+	"encoding/json"
+	"log"
 	"sync"
 	"taskapp/internal/models"
 	"time"
 )
+
+//go:embed demo_tasks.json
+var demoTasksJSON []byte
 
 // MemoryStore handles in-memory task storage
 type MemoryStore struct {
@@ -24,123 +30,42 @@ func NewMemoryStore() *MemoryStore {
 	return store
 }
 
-// seedDemoTasks creates initial demo data
+// DemoTask represents the JSON structure for demo tasks
+type DemoTask struct {
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Status      string `json:"status"`
+	Priority    string `json:"priority"`
+}
+
+// seedDemoTasks loads demo data from JSON file
 func (s *MemoryStore) seedDemoTasks() {
-	demoTasks := []*models.Task{
-		{
-			ID:          "1",
-			Title:       "Review pull requests",
-			Description: "Check the pending PRs from the team",
-			Status:      "todo",
-			Priority:    "high",
-			CreatedAt:   time.Now().Add(-48 * time.Hour),
-			UpdatedAt:   time.Now().Add(-48 * time.Hour),
-		},
-		{
-			ID:          "2",
-			Title:       "Update API documentation",
-			Description: "Document the new endpoints we added last week",
-			Status:      "in-progress",
-			Priority:    "medium",
-			CreatedAt:   time.Now().Add(-24 * time.Hour),
-			UpdatedAt:   time.Now().Add(-2 * time.Hour),
-		},
-		{
-			ID:          "3",
-			Title:       "Fix login bug",
-			Description: "Users reported issues with OAuth login flow",
-			Status:      "done",
-			Priority:    "high",
-			CreatedAt:   time.Now().Add(-72 * time.Hour),
-			UpdatedAt:   time.Now().Add(-12 * time.Hour),
-		},
-		{
-			ID:          "4",
-			Title:       "Implement dark mode",
-			Description: "Add theme toggle for better user experience",
-			Status:      "in-progress",
-			Priority:    "low",
-			CreatedAt:   time.Now().Add(-36 * time.Hour),
-			UpdatedAt:   time.Now().Add(-10 * time.Hour),
-		},
-		{
-			ID:          "5",
-			Title:       "Optimize database queries",
-			Description: "Some queries are taking too long, need indexing",
-			Status:      "in-progress",
-			Priority:    "high",
-			CreatedAt:   time.Now().Add(-20 * time.Hour),
-			UpdatedAt:   time.Now().Add(-1 * time.Hour),
-		},
-		{
-			ID:          "6",
-			Title:       "Write unit tests",
-			Description: "Increase test coverage to at least 80%",
-			Status:      "todo",
-			Priority:    "medium",
-			CreatedAt:   time.Now().Add(-12 * time.Hour),
-			UpdatedAt:   time.Now().Add(-12 * time.Hour),
-		},
-		{
-			ID:          "7",
-			Title:       "Setup CI/CD pipeline",
-			Description: "Automate deployment process with GitHub Actions",
-			Status:      "done",
-			Priority:    "medium",
-			CreatedAt:   time.Now().Add(-96 * time.Hour),
-			UpdatedAt:   time.Now().Add(-24 * time.Hour),
-		},
-		{
-			ID:          "8",
-			Title:       "Refactor authentication module",
-			Description: "Clean up the auth code and improve security",
-			Status:      "in-progress",
-			Priority:    "high",
-			CreatedAt:   time.Now().Add(-8 * time.Hour),
-			UpdatedAt:   time.Now().Add(-3 * time.Hour),
-		},
-		{
-			ID:          "9",
-			Title:       "Design new landing page",
-			Description: "Create mockups for the updated homepage",
-			Status:      "in-progress",
-			Priority:    "medium",
-			CreatedAt:   time.Now().Add(-48 * time.Hour),
-			UpdatedAt:   time.Now().Add(-6 * time.Hour),
-		},
-		{
-			ID:          "10",
-			Title:       "Mobile app research",
-			Description: "Evaluate React Native vs Flutter for mobile version",
-			Status:      "todo",
-			Priority:    "low",
-			CreatedAt:   time.Now().Add(-4 * time.Hour),
-			UpdatedAt:   time.Now().Add(-4 * time.Hour),
-		},
-		{
-			ID:          "11",
-			Title:       "Performance monitoring setup",
-			Description: "Integrate New Relic or DataDog for monitoring",
-			Status:      "in-progress",
-			Priority:    "medium",
-			CreatedAt:   time.Now().Add(-30 * time.Hour),
-			UpdatedAt:   time.Now().Add(-5 * time.Hour),
-		},
-		{
-			ID:          "12",
-			Title:       "Security audit",
-			Description: "Run penetration tests and fix vulnerabilities",
-			Status:      "done",
-			Priority:    "high",
-			CreatedAt:   time.Now().Add(-120 * time.Hour),
-			UpdatedAt:   time.Now().Add(-48 * time.Hour),
-		},
+	var demoTasks []DemoTask
+
+	if err := json.Unmarshal(demoTasksJSON, &demoTasks); err != nil {
+		log.Printf("Error loading demo tasks: %v", err)
+		return
 	}
 
-	for _, task := range demoTasks {
+	now := time.Now()
+	for i, dt := range demoTasks {
+		// Create timestamps with varying ages
+		hoursAgo := time.Duration((i+1)*4) * time.Hour
+		task := &models.Task{
+			ID:          dt.ID,
+			Title:       dt.Title,
+			Description: dt.Description,
+			Status:      dt.Status,
+			Priority:    dt.Priority,
+			CreatedAt:   now.Add(-hoursAgo),
+			UpdatedAt:   now.Add(-hoursAgo / 2),
+		}
 		s.tasks[task.ID] = task
 	}
-	s.nextID = 13
+
+	s.nextID = 73
+	log.Printf("Loaded %d demo tasks from JSON", len(demoTasks))
 }
 
 // GetAll returns all tasks (thread-safe)
