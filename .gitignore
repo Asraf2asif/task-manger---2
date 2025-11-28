@@ -1,0 +1,18 @@
+# Backend
+backend/taskapp
+backend/*.exe
+
+# Frontend
+frontend-vite/node_modules/
+frontend-vite/build/
+frontend-vite/.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
