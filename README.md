@@ -145,8 +145,8 @@ task-manager/
 **1. Clone the repository**
 
 ```bash
-git clone <your-repo-url>
-cd task-manager
+git clone https://github.com/Asraf2asif/task-manger---2.git
+cd task-manger---2
 ```
 
 **2. Start the Backend**
@@ -231,7 +231,7 @@ This is a portfolio project, but suggestions and feedback are welcome!
 
 ## 📄 License
 
-MIT License - feel free to use this project for learning or as a template.
+All Rights Reserved. This project is for portfolio/demonstration purposes only. No permission is granted to use, copy, modify, or distribute this code without explicit written consent from the author.
 
 ---
 
