@@ -22,32 +22,27 @@ import TaskCard from "./TaskCard.jsx";
 const TASKS_PER_PAGE = 10;
 
 // Sort function outside component
-const sortTasks = (taskList, sortBy) => {
+const sortTasks = (taskList, field, direction) => {
   const sorted = [...taskList];
 
-  switch (sortBy) {
-    case "priority-high":
+  switch (field) {
+    case "priority":
       return sorted.sort((a, b) => {
         const priorityOrder = { high: 0, medium: 1, low: 2 };
-        return priorityOrder[a.priority] - priorityOrder[b.priority];
+        const comparison =
+          priorityOrder[a.priority] - priorityOrder[b.priority];
+        return direction === "desc" ? comparison : -comparison;
       });
-    case "priority-low":
+    case "name":
       return sorted.sort((a, b) => {
-        const priorityOrder = { high: 2, medium: 1, low: 0 };
-        return priorityOrder[a.priority] - priorityOrder[b.priority];
+        const comparison = a.title.localeCompare(b.title);
+        return direction === "asc" ? comparison : -comparison;
       });
-    case "name-asc":
-      return sorted.sort((a, b) => a.title.localeCompare(b.title));
-    case "name-desc":
-      return sorted.sort((a, b) => b.title.localeCompare(a.title));
-    case "date-asc":
-      return sorted.sort(
-        (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt)
-      );
-    case "date-desc":
-      return sorted.sort(
-        (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
-      );
+    case "date":
+      return sorted.sort((a, b) => {
+        const comparison = new Date(a.updatedAt) - new Date(b.updatedAt);
+        return direction === "asc" ? comparison : -comparison;
+      });
     default:
       return sorted;
   }
@@ -58,35 +53,43 @@ function TaskList({ tasks, loading, error, onEdit, onDelete }) {
   const [inProgressPage, setInProgressPage] = useState(1);
   const [donePage, setDonePage] = useState(1);
 
-  // Separate sort state for each tab
-  const [todoSort, setTodoSort] = useState("date-desc");
-  const [inProgressSort, setInProgressSort] = useState("date-desc");
-  const [doneSort, setDoneSort] = useState("date-desc");
+  // Separate sort state for each tab - field and direction (default: priority high to low)
+  const [todoSortField, setTodoSortField] = useState("priority");
+  const [todoSortDir, setTodoSortDir] = useState("desc");
+
+  const [inProgressSortField, setInProgressSortField] = useState("priority");
+  const [inProgressSortDir, setInProgressSortDir] = useState("desc");
+
+  const [doneSortField, setDoneSortField] = useState("priority");
+  const [doneSortDir, setDoneSortDir] = useState("desc");
 
   // Group and sort tasks by status with independent sorting - BEFORE early returns
   const todoTasks = useMemo(
     () =>
       sortTasks(
         tasks.filter((t) => t.status === "todo"),
-        todoSort
+        todoSortField,
+        todoSortDir
       ),
-    [tasks, todoSort]
+    [tasks, todoSortField, todoSortDir]
   );
   const inProgressTasks = useMemo(
     () =>
       sortTasks(
         tasks.filter((t) => t.status === "in-progress"),
-        inProgressSort
+        inProgressSortField,
+        inProgressSortDir
       ),
-    [tasks, inProgressSort]
+    [tasks, inProgressSortField, inProgressSortDir]
   );
   const doneTasks = useMemo(
     () =>
       sortTasks(
         tasks.filter((t) => t.status === "done"),
-        doneSort
+        doneSortField,
+        doneSortDir
       ),
-    [tasks, doneSort]
+    [tasks, doneSortField, doneSortDir]
   );
 
   // Early returns AFTER all hooks
@@ -179,27 +182,62 @@ function TaskList({ tasks, loading, error, onEdit, onDelete }) {
     );
   };
 
-  const renderSortControl = (sortValue, setSortValue) => (
-    <div className="flex items-center justify-between mb-6 bg-white p-4 rounded-lg shadow-sm">
-      <div className="flex items-center gap-2">
-        <ArrowUpDown size={18} className="text-muted-foreground" />
-        <span className="text-sm font-medium">Sort by:</span>
+  const renderSortControl = (field, setField, direction, setDirection) => {
+    // Get label for direction button based on field
+    const getDirectionLabel = () => {
+      if (field === "priority") {
+        return direction === "desc" ? "High to Low" : "Low to High";
+      } else if (field === "date") {
+        return direction === "desc" ? "Newest First" : "Oldest First";
+      } else {
+        return direction === "asc" ? "A to Z" : "Z to A";
+      }
+    };
+
+    // Get icon rotation based on direction
+    const getIconRotation = () => {
+      if (field === "priority") {
+        return direction === "desc" ? "rotate-180" : "";
+      } else if (field === "date") {
+        return direction === "desc" ? "rotate-180" : "";
+      } else {
+        return direction === "asc" ? "" : "rotate-180";
+      }
+    };
+
+    return (
+      <div className="inline-flex items-center gap-2 mb-6 bg-white p-3 rounded-lg shadow-sm border">
+        <ArrowUpDown
+          size={16}
+          className="text-muted-foreground flex-shrink-0"
+        />
+        <span className="text-sm font-medium text-muted-foreground">Sort:</span>
+        <Select value={field} onValueChange={setField}>
+          <SelectTrigger className="w-[110px] h-9 border-0 bg-transparent hover:bg-accent focus:ring-0">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="priority">Priority</SelectItem>
+            <SelectItem value="date">Date</SelectItem>
+            <SelectItem value="name">Name</SelectItem>
+          </SelectContent>
+        </Select>
+        <div className="h-6 w-px bg-border" />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setDirection(direction === "asc" ? "desc" : "asc")}
+          className="gap-2 h-9 px-3 hover:bg-accent font-medium"
+        >
+          <ArrowUpDown
+            size={14}
+            className={`transition-transform ${getIconRotation()}`}
+          />
+          <span className="text-sm">{getDirectionLabel()}</span>
+        </Button>
       </div>
-      <Select value={sortValue} onValueChange={setSortValue}>
-        <SelectTrigger className="w-[200px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="date-desc">Date (Newest First)</SelectItem>
-          <SelectItem value="date-asc">Date (Oldest First)</SelectItem>
-          <SelectItem value="priority-high">Priority (High to Low)</SelectItem>
-          <SelectItem value="priority-low">Priority (Low to High)</SelectItem>
-          <SelectItem value="name-asc">Name (A to Z)</SelectItem>
-          <SelectItem value="name-desc">Name (Z to A)</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
-  );
+    );
+  };
 
   return (
     <div>
@@ -226,7 +264,12 @@ function TaskList({ tasks, loading, error, onEdit, onDelete }) {
             </div>
           ) : (
             <>
-              {renderSortControl(todoSort, setTodoSort)}
+              {renderSortControl(
+                todoSortField,
+                setTodoSortField,
+                todoSortDir,
+                setTodoSortDir
+              )}
               {renderTaskGrid(paginatedTodo)}
               {renderPagination(todoPage, todoTotalPages, setTodoPage)}
             </>
@@ -240,7 +283,12 @@ function TaskList({ tasks, loading, error, onEdit, onDelete }) {
             </div>
           ) : (
             <>
-              {renderSortControl(inProgressSort, setInProgressSort)}
+              {renderSortControl(
+                inProgressSortField,
+                setInProgressSortField,
+                inProgressSortDir,
+                setInProgressSortDir
+              )}
               {renderTaskGrid(paginatedInProgress)}
               {renderPagination(
                 inProgressPage,
@@ -258,7 +306,12 @@ function TaskList({ tasks, loading, error, onEdit, onDelete }) {
             </div>
           ) : (
             <>
-              {renderSortControl(doneSort, setDoneSort)}
+              {renderSortControl(
+                doneSortField,
+                setDoneSortField,
+                doneSortDir,
+                setDoneSortDir
+              )}
               {renderTaskGrid(paginatedDone)}
               {renderPagination(donePage, doneTotalPages, setDonePage)}
             </>
