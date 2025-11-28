@@ -4,11 +4,9 @@ A professional, full-stack task management application showcasing modern web dev
 
 ## 📹 Demo
 
-https://github.com/user-attachments/assets/e0c8c8e5-8f5e-4f3e-9f5e-8f5e8f5e8f5e
+[![Watch Demo Video](https://img.shields.io/badge/▶️_Watch_Demo-Google_Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/file/d/1YfPfDQUVGwjPNBLabGsrwOxcsfa0AavE/view?usp=sharing)
 
-<video src="https://raw.githubusercontent.com/Asraf2asif/task-manger---2/refs/heads/main/Demonstration%20video.mp4" controls></video>
-
-> **Note:** If the video doesn't play above, [click here to download and watch](https://raw.githubusercontent.com/Asraf2asif/task-manger---2/refs/heads/main/Demonstration%20video.mp4)
+> Click the button above to watch the full demonstration video on Google Drive
 
 ## ✨ Features Overview
 
