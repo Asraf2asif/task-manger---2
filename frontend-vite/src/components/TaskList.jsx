@@ -92,6 +92,13 @@ function TaskList({ tasks, loading, error, onEdit, onDelete }) {
     [tasks, doneSortField, doneSortDir]
   );
 
+  // Reset pages to 1 when tasks change (e.g., after search)
+  React.useEffect(() => {
+    setTodoPage(1);
+    setInProgressPage(1);
+    setDonePage(1);
+  }, [tasks.length]);
+
   // Early returns AFTER all hooks
   if (loading) {
     return (
