@@ -21,6 +21,38 @@ import TaskCard from "./TaskCard.jsx";
 
 const TASKS_PER_PAGE = 10;
 
+// Sort function outside component
+const sortTasks = (taskList, sortBy) => {
+  const sorted = [...taskList];
+
+  switch (sortBy) {
+    case "priority-high":
+      return sorted.sort((a, b) => {
+        const priorityOrder = { high: 0, medium: 1, low: 2 };
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      });
+    case "priority-low":
+      return sorted.sort((a, b) => {
+        const priorityOrder = { high: 2, medium: 1, low: 0 };
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      });
+    case "name-asc":
+      return sorted.sort((a, b) => a.title.localeCompare(b.title));
+    case "name-desc":
+      return sorted.sort((a, b) => b.title.localeCompare(a.title));
+    case "date-asc":
+      return sorted.sort(
+        (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt)
+      );
+    case "date-desc":
+      return sorted.sort(
+        (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+      );
+    default:
+      return sorted;
+  }
+};
+
 function TaskList({ tasks, loading, error, onEdit, onDelete }) {
   const [todoPage, setTodoPage] = useState(1);
   const [inProgressPage, setInProgressPage] = useState(1);
@@ -31,6 +63,33 @@ function TaskList({ tasks, loading, error, onEdit, onDelete }) {
   const [inProgressSort, setInProgressSort] = useState("date-desc");
   const [doneSort, setDoneSort] = useState("date-desc");
 
+  // Group and sort tasks by status with independent sorting - BEFORE early returns
+  const todoTasks = useMemo(
+    () =>
+      sortTasks(
+        tasks.filter((t) => t.status === "todo"),
+        todoSort
+      ),
+    [tasks, todoSort]
+  );
+  const inProgressTasks = useMemo(
+    () =>
+      sortTasks(
+        tasks.filter((t) => t.status === "in-progress"),
+        inProgressSort
+      ),
+    [tasks, inProgressSort]
+  );
+  const doneTasks = useMemo(
+    () =>
+      sortTasks(
+        tasks.filter((t) => t.status === "done"),
+        doneSort
+      ),
+    [tasks, doneSort]
+  );
+
+  // Early returns AFTER all hooks
   if (loading) {
     return (
       <div className="flex justify-center items-center py-16">
@@ -56,64 +115,6 @@ function TaskList({ tasks, loading, error, onEdit, onDelete }) {
       </div>
     );
   }
-
-  // Sort function
-  const sortTasks = (taskList, sortBy) => {
-    const sorted = [...taskList];
-
-    switch (sortBy) {
-      case "priority-high":
-        return sorted.sort((a, b) => {
-          const priorityOrder = { high: 0, medium: 1, low: 2 };
-          return priorityOrder[a.priority] - priorityOrder[b.priority];
-        });
-      case "priority-low":
-        return sorted.sort((a, b) => {
-          const priorityOrder = { high: 2, medium: 1, low: 0 };
-          return priorityOrder[a.priority] - priorityOrder[b.priority];
-        });
-      case "name-asc":
-        return sorted.sort((a, b) => a.title.localeCompare(b.title));
-      case "name-desc":
-        return sorted.sort((a, b) => b.title.localeCompare(a.title));
-      case "date-asc":
-        return sorted.sort(
-          (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt)
-        );
-      case "date-desc":
-        return sorted.sort(
-          (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
-        );
-      default:
-        return sorted;
-    }
-  };
-
-  // Group and sort tasks by status with independent sorting
-  const todoTasks = useMemo(
-    () =>
-      sortTasks(
-        tasks.filter((t) => t.status === "todo"),
-        todoSort
-      ),
-    [tasks, todoSort]
-  );
-  const inProgressTasks = useMemo(
-    () =>
-      sortTasks(
-        tasks.filter((t) => t.status === "in-progress"),
-        inProgressSort
-      ),
-    [tasks, inProgressSort]
-  );
-  const doneTasks = useMemo(
-    () =>
-      sortTasks(
-        tasks.filter((t) => t.status === "done"),
-        doneSort
-      ),
-    [tasks, doneSort]
-  );
 
   // Pagination helper
   const paginateTasks = (taskList, currentPage) => {
