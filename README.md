@@ -48,15 +48,6 @@ The server starts on port 8080. You should see "Server starting on port 8080" in
 cd frontend-vite
 npm install
 
-# Install shadcn components (run these one by one)
-npx shadcn@latest add button
-npx shadcn@latest add card
-npx shadcn@latest add dialog
-npx shadcn@latest add input
-npx shadcn@latest add label
-npx shadcn@latest add select
-npx shadcn@latest add badge
-
 # Start the dev server
 npm run dev
 ```
